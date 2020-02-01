@@ -1,0 +1,73 @@
+class Solution:
+    ans = []
+    # cache = []  # 记录当前
+    # cache = [[0] * n for _ in range(n)]  # 记录了每一个位置是否被放置过
+    def solveNQueens(self, n):
+        cache = []
+        cache = self.func_1(cache, n)
+        # print(self.ans)
+        # if self.ans == []:
+        #     return []
+        nums = self.show(n)
+        self.ans = []
+        return nums
+    
+	# 解法1 添加剪枝条件，避免无效的搜索
+    def func_1(self, cache, n):
+        if len(cache) == n:
+            self.ans.append(tuple(cache))
+            return cache
+        for i in range(n):
+            if i in cache:
+                continue
+            if self.charge(cache, len(cache), i):
+                cache.append(i)
+                cache = self.func_1(cache, n)
+                cache.pop()
+        return cache
+
+    def charge(self, wheres, ind_last, num_last):  # 当前的必定是最后面的一个位置
+        # j不一样， 行列的差相同则代表两者在同一个右斜线 两者相加之和相同则代表两者在同一个左斜线上
+        for ind, num in enumerate(wheres):
+            if (num == num_last) or (ind_last - num_last == ind - num) or (ind_last + num_last == ind + num):
+                return False
+        return True
+		
+	# 解法2
+    def func(self, cache, n):
+        """
+        cache 用于记录当前的所有状态. 即前面所有行的皇后摆放位置和当前行的皇后摆放位置
+        """
+        if self.charge_1(cache):
+            if len(cache) == n:
+                self.ans.append(tuple(cache))
+                return cache
+            else:
+                for i in range(n):
+                    if i in cache:
+                        continue
+                    cache.append(i)
+                    cache = self.func(cache, n)
+                    cache.pop()
+                return cache
+        else:
+            return cache
+        
+    def charge_1(self, cache):
+        if len(cache) == 0:
+            return True
+        ind_last, num_last = len(cache)-1,  cache[-1]
+        for ind, num in enumerate(cache[:-1]):
+            if (num == num_last) or (ind_last - num_last == ind - num) or (ind_last + num_last == ind + num):
+                return False
+        return True
+    
+    def show(self, n):
+        nums = []
+        for item in self.ans:
+            temp = []
+            for i in range(n):
+                length = item[i]
+                temp.append('.'*length+'Q'+'.'*(n-length-1))
+            nums.append(temp)
+        return nums
