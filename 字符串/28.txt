@@ -1,0 +1,70 @@
++ 题目
+给定一个 haystack 字符串和一个 needle 字符串，在 haystack 字符串中找出 needle 字符串出现的第一个位置 (从0开始)。如果不存在，则返回  -1。
+
++ 解法
+
+# KMP。因为Python中构造一个迭代器可能比直接字符串比较更加耗时，因此这里使用C++来描述KMP解法。
+
+class Solution {
+public:
+	int strStr(string haystack, string needle) {
+		if (needle.empty()) {
+			return 0;
+		}
+		if (haystack.empty()) {
+			return -1;
+		}
+		if (haystack.size() < needle.size()) {
+			return -1;
+		}
+
+		int m = haystack.size();
+		int n = needle.size();
+
+		vector<int> res(n - 1, 0);
+		int i = 1;
+		int len = 0;
+		while (i < n - 1)
+		{
+			if (needle[i] == needle[len]) {
+				++len;
+				res[i++] = len;
+			}
+			else {
+				if (len > 0) {
+					len = res[len - 1];
+				}
+				else {
+					res[i++] = len;
+				}
+			}
+		}
+		vector<int> res1(1, -1);
+		res1.insert(res1.end(), res.begin(), res.end());
+		vector<int>().swap(res);
+
+
+		for (int i = 0, j = 0; i < m;)
+		{
+			if (haystack[i] == needle[j]) {
+				if (j == n - 1) {
+					return i - n + 1;
+					j = res1[j];
+
+				}
+				else {
+					i++; j++;
+				}
+			}
+			else {
+				if (res1[j] == -1) {
+					i++;
+				}
+				else {
+					j = res1[j];
+				}
+			}
+		}
+		return -1;
+	}
+};

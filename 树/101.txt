@@ -1,0 +1,60 @@
+
+class Solution:
+    def isSymmetric(self, root: TreeNode) -> bool:
+        if not root:
+            return True
+        
+        # iterate function
+        # cur = []
+        # pre = [[root.left, root.right]]
+        # while pre:
+        #     for l_tree, r_tree in pre:
+        #         if l_tree is None and r_tree is None:
+        #             continue
+        #         elif l_tree is None or r_tree is None:
+        #             return False
+        #         if l_tree.val == r_tree.val:
+        #             cur.append([l_tree.left, r_tree.right])
+        #             cur.append([l_tree.right, r_tree.left])
+        #         else:
+        #             return False
+        #     pre = cur.copy()
+        #     cur = []
+        # return True
+        
+        # recurrent function  看上去很垃圾的版本。这里通过ans保存了一对一对的结果，都没有想到直接通过dfs分别遍历这些对
+        # def func(root_item):
+        #     global flag
+        #     if not root_item:
+        #         return 1
+        #     ans = []
+        #     for l_t, r_t in root_item:
+        #         if l_t is None and r_t is None:
+        #             continue
+        #         elif l_t is None or r_t is None:
+        #             flag = 0
+        #             return flag
+        #         if l_t.val == r_t.val:
+        #             ans.append([l_t.left, r_t.right])
+        #             ans.append([l_t.right, r_t.left])
+        #         else:
+        #             flag = 0
+        #             return flag
+        #     flag = func(ans)
+        #     return flag
+        # flag = 1
+        # flag = func([[root.left, root.right]])
+        # return flag
+        
+        
+        # recurrent function 看上去比较简洁的版本
+        def dfs(left, right):
+            if left == None and right == None:
+                return 1
+            elif left == None or right == None:
+                return 0
+            if left.val != right.val:
+                return 0
+            else:
+                return dfs(left.left, right.right) and dfs(left.right, right.left)
+        return dfs(root.left, root.right)
